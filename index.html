@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <title>猜數字遊戲</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>猜數字遊戲</h1>
+    <p>
+      <span class="lowernum">1</span>
+      到
+      <span class="highernum">100</span>
+      之間的數字，你猜是多少？
+    </p>
+    <input type="text" id="guessField" />
+    <input type="submit" value="猜!" id="guessSubmit" />
+    <input type="button" value="再玩一次" id="playagain" />
+    <p class="message"></p>
+    <input type="submit" value="想偷看答案嗎" id="guessAnswer" />
+    <p class="answer_messenge"></p>
+    <p class="delay_message"></p>    
+
+    <script>
+      // Random number
+      let targetNumber = Math.floor(Math.random() * 100) + 1; //隨機生成數字
+      console.log("answer: " + targetNumber);
+
+      // Get element
+      const guessField = document.getElementById("guessField");
+      const guessSubmit = document.getElementById("guessSubmit");
+      const guessAnswer = document.getElementById("guessAnswer");
+      const playagain = document.getElementById("playagain");
+      const message = document.querySelector(".message");
+      const answer_messenge = document.querySelector(".answer_messenge");
+      const lowernum = document.querySelector(".lowernum");
+      const highernum = document.querySelector(".highernum");
+      const delay_message = document.querySelector(".delay_message");
+
+
+      // Additional variable for tracking guess count
+      let guessCount = 0;
+
+      // Event listener
+      guessSubmit.addEventListener("click", checkGuess);
+      guessAnswer.addEventListener("click", checkAnswer);
+      playagain.addEventListener("click",playAgain);
+
+      // delay function
+      function delayedDisplay(string, ms, callback) {
+        setTimeout(function() {
+            console.log(string);
+            delay_message.textContent = string;
+            if (typeof callback === 'function') {
+            callback();
+            }
+        }, ms);
+        }
+
+      function callback(){
+        delay_message.textContent =string ;
+      }
+
+      // Guess function
+      function checkGuess() {
+        const userGuess = parseInt(guessField.value);
+        console.log("userGuess: " + userGuess);
+
+        // Increment guess count
+        guessCount++;
+            if (guessCount < 5){
+                if (userGuess === targetNumber) {
+                message.textContent = `恭喜你，你猜對了！你這次猜了 ${guessCount} 次哦～`;
+                message.style.color = "green";
+                guessSubmit.disabled = true;
+                } else if (userGuess < targetNumber) {
+                message.textContent = "太小了，再試一次。";
+                lowernum.textContent = userGuess;
+                message.style.color = "red";
+                } else {
+                message.textContent = "太大了，再試一次。";
+                highernum.textContent = userGuess;
+                message.style.color = "red";}
+            }else{
+                // 遊戲失敗
+                message.textContent = `You Failed!答案是 ${targetNumber} `;
+                guessSubmit.disabled = true;
+                delayedDisplay("5", 0, callback);     //test
+                delayedDisplay("4", 1000, callback);
+                delayedDisplay("3", 2000, callback);
+                delayedDisplay("2", 3000, callback);
+                delayedDisplay("1", 4000, callback);
+                setTimeout(playAgain,5000);
+             }    
+    
+
+        guessField.value = "";
+        guessField.focus();
+      }
+
+      // 揭曉答案 
+      function checkAnswer(){
+        answer_messenge.textContent = `作弊鬼!本次的答案是： ` + targetNumber ;
+        guessSubmit.disabled = true;
+      }
+
+      // 再玩一次
+      function playAgain() {
+        delay_message.textContent = "";
+        message.textContent = "";
+        targetNumber = Math.floor(Math.random() * 100) + 1; // 更新全域變數 targetNumber
+        answer_messenge.textContent = "";
+        guessSubmit.disabled = false;
+        highernum.textContent = 100;
+        lowernum.textContent = 1;
+        guessCount = 0
+        }
+
+
+    </script>
+  </body>
+</html>
